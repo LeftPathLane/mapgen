@@ -23,6 +23,14 @@ public class ChunkSection {
 		if (block.getData() != 0) setHalfByte(data, index, block.getData());
 	}
 
+	public Block getBlock(int x, int y, int z) {
+		int index = getIndex(x, y, z);
+		byte material = blocks[index];
+		if (material == 0) return null;
+		byte blockData = getHalfByte(data, index);
+		return new Block(material, blockData, x, y, z);
+	}
+
 	private void setHalfByte(byte[] arr, int index, byte value) {
 		byte old = arr[index / 2];
 		if (index % 2 == 0) {
@@ -37,7 +45,11 @@ public class ChunkSection {
 	}
 
 	private int getIndex(Block block) {
-		return (block.getY() & 0x0F) * 16 * 16 + (block.getZ() & 0x0F) * 16 + (block.getX() & 0x0F);
+		return getIndex(block.getX(), block.getY(), block.getZ());
+	}
+
+	private int getIndex(int x, int y, int z) {
+		return (y & 0x0F) * 16 * 16 + (z & 0x0F) * 16 + (x & 0x0F);
 	}
 
 	public NbtCompound toNbt() {

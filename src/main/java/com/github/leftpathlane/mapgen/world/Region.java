@@ -36,6 +36,15 @@ public class Region {
 
 	}
 
+	public Block getBlock(int x, int y, int z) {
+		int chunkX = x >> 4;
+		int chunkZ = z >> 4;
+		Position pos = new Position(chunkX, chunkZ);
+		Chunk chunk = chunks.get(pos);
+		if (chunk == null) return null;
+		return chunk.getBlock(x, y, z);
+	}
+
 	public byte[] toBytes() {
 		BlockByteArray data = new BlockByteArray(3);
 		int offset = 2;

@@ -35,6 +35,15 @@ public class World {
 		region.addBlock(block);
 	}
 
+	public Block getBlock(int x, int y, int z) {
+		int regionX = x >> 9;
+		int regionZ = z >> 9;
+		Position pos = new Position(regionX, regionZ);
+		Region region = regions.get(pos);
+		if (region == null) return null;
+		return region.getBlock(x, y, z);
+	}
+
 	public void saveWorld(File file) {
 		if (!file.exists()) file.mkdir();
 		File levelData = new File(file, "level.dat");

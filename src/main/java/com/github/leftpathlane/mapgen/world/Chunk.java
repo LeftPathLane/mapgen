@@ -40,6 +40,13 @@ public class Chunk {
 		if (block.getY() > heightMap[heightMapIndex]) heightMap[heightMapIndex] = block.getY();
 	}
 
+	public Block getBlock(int x, int y, int z) {
+		int ypos = y >> 4;
+		ChunkSection section = sections[ypos];
+		if (section == null) return null;
+		return section.getBlock(x, y, z);
+	}
+
 	public NbtCompound toNbt() {
 		NbtCompound nbt = new NbtCompound("Chunk [" + (x & 31) + ", " + (z & 31) + "]", new HashMap<String, NbtType>());
 		NbtCompound level = new NbtCompound("Level", new HashMap<String, NbtType>());
@@ -60,6 +67,4 @@ public class Chunk {
 		nbt.addNbt(level);
 		return nbt;
 	}
-
-
 }
