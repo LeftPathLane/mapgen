@@ -52,8 +52,28 @@ public class BlockByteArray {
 		pointer += len;
 	}
 
-	public void write(byte b[]) {
+	public synchronized void write(byte b[]) {
 		write(b, 0, b.length);
+	}
+
+	public synchronized int read() {
+		byte temp = buf[pointer];
+		pointer += 1;
+		return temp;
+	}
+
+	public synchronized int read(byte[] b) {
+		return read(b, 0, b.length);
+	}
+
+	public synchronized int read(byte[] b, int offset, int length) {
+		int available = buf.length - pointer;
+		if (length > available) length = available;
+		if (pointer >= buf.length) return -1;
+		if (length <= 0) return 0;
+		System.arraycopy(buf, pointer, b, offset, length);
+		pointer += length;
+		return length;
 	}
 
 	public synchronized void resetPointer() {
@@ -61,13 +81,17 @@ public class BlockByteArray {
 	}
 
 	public synchronized void skip(int bytes) {
-		ensureCapacity(pointer + bytes);
-		pointer += bytes;
+		skipTo(pointer + bytes);
 	}
 
 	public synchronized void skipTo(int point) {
 		ensureCapacity(point);
 		pointer = point;
+	}
+
+	public synchronized void skipToBlock(int block) {
+		int blockBytes = block * BLOCK_SIZE;
+		skipTo(blockBytes);
 	}
 
 	public synchronized int size() {

@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class Chunk {
 	private final int x, z;
-	private final int[] heightMap = new int[256];
+	private final int[] heightMap;
 	public ChunkSection[] sections = new ChunkSection[16];
 	private long inhabitedTime, lastUpdate;
 	private boolean lightPopulated, terrainPopulated;
@@ -18,6 +18,24 @@ public class Chunk {
 	public Chunk(int x, int z) {
 		this.x = x;
 		this.z = z;
+		this.heightMap = new int[256];
+	}
+
+	public Chunk(NbtCompound chunk) {
+		NbtCompound level = chunk.getValue().get("Level").asCompound();
+		this.x = level.getValue().get("xPos").asInt().getValue();
+		this.z = level.getValue().get("zPos").asInt().getValue();
+		this.heightMap = level.getValue().get("HeightMap").asIntArray().getValue();
+		this.inhabitedTime = level.getValue().get("InhabitedTime").asLong().getValue();
+		this.lastUpdate = level.getValue().get("LastUpdate").asLong().getValue();
+		this.lightPopulated = level.getValue().get("LightPopulated").asByte().asBoolean();
+		this.terrainPopulated = level.getValue().get("TerrainPopulated").asByte().asBoolean();
+		NbtList sectionList = level.getValue().get("Sections").asList();
+		for (NbtType t : sectionList.getValue()) {
+			NbtCompound section = t.asCompound();
+			byte y = section.getValue().get("Y").asByte().getValue();
+			sections[y] = new ChunkSection(section);
+		}
 	}
 
 	public int getX() {

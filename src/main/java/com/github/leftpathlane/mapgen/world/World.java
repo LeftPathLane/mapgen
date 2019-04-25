@@ -1,6 +1,8 @@
 package com.github.leftpathlane.mapgen.world;
 
+import com.github.leftpathlane.jnbt.NbtReader;
 import com.github.leftpathlane.jnbt.NbtWriter;
+import com.github.leftpathlane.jnbt.types.NbtCompound;
 import com.github.leftpathlane.mapgen.Block;
 import com.github.leftpathlane.mapgen.LevelData;
 import com.github.leftpathlane.mapgen.util.Position;
@@ -21,6 +23,25 @@ public class World {
 
 	public World() {
 		this.levelData = new LevelData();
+	}
+
+	public World(File root) throws IOException {
+		if (!root.exists()) throw new IllegalArgumentException();
+		File levelDataFile = new File(root, "level.dat");
+		if (!levelDataFile.exists()) throw new IllegalArgumentException();
+
+		NbtCompound levelDataNbt = new NbtReader(levelDataFile).readAll();
+		this.levelData = new LevelData(levelDataNbt);
+
+
+		File regionFolder = new File(root, "region");
+		if (!regionFolder.exists() || regionFolder.listFiles() == null) return;
+		for (File regionFile : regionFolder.listFiles()) {
+			Region region = new Region(regionFile);
+			if (region == null) continue;
+			regions.put(new Position(region.getRegionX(), region.getRegionZ()), region);
+		}
+
 	}
 
 	public void addBlock(Block block) {
