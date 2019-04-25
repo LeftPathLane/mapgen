@@ -9,12 +9,13 @@ import com.github.leftpathlane.mapgen.util.Position;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.Deflater;
 import java.util.zip.InflaterInputStream;
 
-public class Region {
+public class Region implements Iterable<Chunk> {
 	private static final int REGION_HEADER = 8192,
 			CHUNK_SIZE = 4096;
 	private static final Pattern pattern = Pattern.compile("r\\.(-?\\d)\\.(-?\\d)\\.mca");
@@ -176,5 +177,10 @@ public class Region {
 		int zPos = level.getValue().get("zPos").asInt().getValue();
 		Position position = new Position(xPos, zPos);
 		chunks.put(position, new Chunk(chunk));
+	}
+
+	@Override
+	public Iterator<Chunk> iterator() {
+		return chunks.values().iterator();
 	}
 }

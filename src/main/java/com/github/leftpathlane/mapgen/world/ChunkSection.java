@@ -14,21 +14,28 @@ public class ChunkSection implements Iterable<Block> {
 	private final byte[] blocks;
 	private final byte[] data;
 	private final byte[] skylight;
+	private transient final int chunkXmod, chunkYmod, chunkZmod;
 
-	public ChunkSection(byte y) {
+	public ChunkSection(byte y, int chunkX, int chunkZ) {
 		this.y = y;
 		this.blockLight = new byte[2048];
 		this.blocks = new byte[4096];
 		this.data = new byte[2048];
 		this.skylight = new byte[2048];
+		this.chunkXmod = chunkX << 4;
+		this.chunkYmod = y << 4;
+		this.chunkZmod = chunkZ << 4;
 	}
 
-	public ChunkSection(NbtCompound section) {
+	public ChunkSection(NbtCompound section, int chunkX, int chunkZ) {
 		this.y = section.getValue().get("Y").asByte().getValue();
 		this.blockLight = section.getValue().get("BlockLight").asByteArray().getValue();
 		this.blocks = section.getValue().get("Blocks").asByteArray().getValue();
 		this.data = section.getValue().get("Data").asByteArray().getValue();
 		this.skylight = section.getValue().get("SkyLight").asByteArray().getValue();
+		this.chunkXmod = chunkX << 4;
+		this.chunkYmod = y << 4;
+		this.chunkZmod = chunkZ << 4;
 	}
 
 	public byte getY() {
@@ -118,7 +125,7 @@ public class ChunkSection implements Iterable<Block> {
 					int z = yz & 0x0F;
 					int y = (yz/16) & 0x0F;
 					index++;
-					return new Block(mat, blockData, x, y, z);
+					return new Block(mat, blockData, chunkXmod + x, chunkYmod + y, chunkZmod + z);
 				}
 				index++;
 			}

@@ -7,8 +7,9 @@ import com.github.leftpathlane.mapgen.Block;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
-public class Chunk {
+public class Chunk implements Iterable<ChunkSection> {
 	private final int x, z;
 	private final int[] heightMap;
 	public ChunkSection[] sections = new ChunkSection[16];
@@ -34,7 +35,7 @@ public class Chunk {
 		for (NbtType t : sectionList.getValue()) {
 			NbtCompound section = t.asCompound();
 			byte y = section.getValue().get("Y").asByte().getValue();
-			sections[y] = new ChunkSection(section);
+			sections[y] = new ChunkSection(section,x,z);
 		}
 	}
 
@@ -50,7 +51,7 @@ public class Chunk {
 		int ypos = block.getY() >> 4;
 		ChunkSection section = sections[ypos];
 		if (section == null) {
-			section = new ChunkSection((byte) ypos);
+			section = new ChunkSection((byte) ypos, x, z);
 			sections[ypos] = section;
 		}
 		section.addBlock(block);
@@ -84,5 +85,39 @@ public class Chunk {
 		level.addNbt("TileEntities", NbtType.NBT_TAG_COMPOUND, new ArrayList<NbtType>());
 		nbt.addNbt(level);
 		return nbt;
+	}
+
+	@Override
+	public Iterator<ChunkSection> iterator() {
+		return new Itr();
+	}
+
+	private class Itr implements Iterator<ChunkSection> {
+		int cursor;
+		ChunkSection next;
+
+		public Itr() {
+			getNext();
+		}
+
+		private void getNext() {
+			for (;cursor<sections.length;cursor++) {
+				next = sections[cursor];
+				cursor++;
+				if (next != null) return;
+			}
+		}
+
+		@Override
+		public boolean hasNext() {
+			return next != null;
+		}
+
+		@Override
+		public ChunkSection next() {
+			ChunkSection ret = next;
+			getNext();
+			return ret;
+		}
 	}
 }

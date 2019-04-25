@@ -11,9 +11,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.zip.GZIPOutputStream;
 
-public class World {
+public class World implements Iterable<Region> {
 	public final LevelData levelData;
 	public HashMap<Position, Region> regions = new HashMap<>();
 
@@ -92,5 +93,10 @@ public class World {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public Iterator<Region> iterator() {
+		return regions.values().iterator();
 	}
 }
