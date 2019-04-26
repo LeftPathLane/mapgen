@@ -6,7 +6,6 @@ import com.github.leftpathlane.mapgen.Block;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.function.Consumer;
 
 public class ChunkSection implements Iterable<Block> {
 	private final byte y;
@@ -46,6 +45,12 @@ public class ChunkSection implements Iterable<Block> {
 		int index = getIndex(block);
 		blocks[index] = block.getMaterial();
 		if (block.getData() != 0) setHalfByte(data, index, block.getData());
+	}
+
+	public void addBlock(byte material, byte data, int x, int y, int z) {
+		int index = getIndex(x, y, z);
+		blocks[index] = material;
+		if (data != 0) setHalfByte(this.data, index, data);
 	}
 
 	public Block getBlock(int x, int y, int z) {
@@ -120,10 +125,10 @@ public class ChunkSection implements Iterable<Block> {
 				mat = blocks[index];
 				if (mat != 0) {
 					byte blockData = getHalfByte(data, index);
-					int yz = index/16;
+					int yz = index / 16;
 					int x = index & 0x0F;
 					int z = yz & 0x0F;
-					int y = (yz/16) & 0x0F;
+					int y = (yz / 16) & 0x0F;
 					index++;
 					return new Block(mat, blockData, chunkXmod + x, chunkYmod + y, chunkZmod + z);
 				}

@@ -46,24 +46,61 @@ public class World implements Iterable<Region> {
 	}
 
 	public void addBlock(Block block) {
-		int regionX = block.getX() >> 9;
-		int regionZ = block.getZ() >> 9;
+		Region region = getRegion(block.getX(), block.getY(), block.getZ());
+		region.addBlock(block);
+	}
+
+	public void addBlock(byte material, byte data, int x, int y, int z) {
+		Region region = getRegion(x, y, z);
+		region.addBlock(material, data, x, y, z);
+	}
+
+	public Block getBlock(int x, int y, int z) {
+		Region region = getLoadedRegion(x, y, z);
+		if (region == null) return null;
+		return region.getBlock(x, y, z);
+	}
+
+	public Region getLoadedRegion(int x, int y, int z) {
+		int regionX = x >> 9;
+		int regionZ = z >> 9;
+		Position pos = new Position(regionX, regionZ);
+		return regions.get(pos);
+	}
+
+	public Region getRegion(int x, int y, int z) {
+		int regionX = x >> 9;
+		int regionZ = z >> 9;
 		Position pos = new Position(regionX, regionZ);
 		Region region = regions.get(pos);
 		if (region == null) {
 			region = new Region(regionX, regionZ);
 			regions.put(pos, region);
 		}
-		region.addBlock(block);
+		return region;
 	}
 
-	public Block getBlock(int x, int y, int z) {
-		int regionX = x >> 9;
-		int regionZ = z >> 9;
-		Position pos = new Position(regionX, regionZ);
-		Region region = regions.get(pos);
+	public Chunk getLoadedChunk(int x, int y, int z) {
+		Region region = getLoadedRegion(x, y, z);
 		if (region == null) return null;
-		return region.getBlock(x, y, z);
+		return region.getChunk(x, y, z);
+	}
+
+	public Chunk getChunk(int x, int y, int z) {
+		Region region = getRegion(x, y, z);
+		if (region == null) return null;
+		return region.getChunk(x, y, z);
+	}
+
+	public ChunkSection getLoadedChunkSection(int x, int y, int z) {
+		Chunk chunk = getLoadedChunk(x, y, z);
+		if (chunk == null) return null;
+		return chunk.getLoadedChunkSection(x, y, z);
+	}
+
+	public ChunkSection getChunkSection(int x, int y, int z) {
+		Chunk chunk = getChunk(x, y, z);
+		return chunk.getChunkSection(x, y, z);
 	}
 
 	public void saveWorld(File file) {

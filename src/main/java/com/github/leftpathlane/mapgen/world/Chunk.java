@@ -35,7 +35,7 @@ public class Chunk implements Iterable<ChunkSection> {
 		for (NbtType t : sectionList.getValue()) {
 			NbtCompound section = t.asCompound();
 			byte y = section.getValue().get("Y").asByte().getValue();
-			sections[y] = new ChunkSection(section,x,z);
+			sections[y] = new ChunkSection(section, x, z);
 		}
 	}
 
@@ -48,22 +48,38 @@ public class Chunk implements Iterable<ChunkSection> {
 	}
 
 	public void addBlock(Block block) {
-		int ypos = block.getY() >> 4;
-		ChunkSection section = sections[ypos];
-		if (section == null) {
-			section = new ChunkSection((byte) ypos, x, z);
-			sections[ypos] = section;
-		}
+		ChunkSection section = getChunkSection(block.getX(), block.getZ(), block.getZ());
 		section.addBlock(block);
-		int heightMapIndex = (block.getX() >> 4) + (block.getZ() >> 4) * 16;
-		if (block.getY() > heightMap[heightMapIndex]) heightMap[heightMapIndex] = block.getY();
+		addToHeightMap(block.getX(), block.getY(), block.getZ());
+	}
+
+	public void addBlock(byte material, byte data, int x, int y, int z) {
+		ChunkSection section = getChunkSection(x, y, z);
+		section.addBlock(material, data, x, y, z);
+		addToHeightMap(x, y, z);
+	}
+
+	private void addToHeightMap(int x, int y, int z) {
+		int heightMapIndex = (x >> 4) + (z >> 4) * 16;
+		if (y > heightMap[heightMapIndex]) heightMap[heightMapIndex] = y;
 	}
 
 	public Block getBlock(int x, int y, int z) {
-		int ypos = y >> 4;
-		ChunkSection section = sections[ypos];
+		ChunkSection section = getLoadedChunkSection(x, y, z);
 		if (section == null) return null;
 		return section.getBlock(x, y, z);
+	}
+
+	public ChunkSection getLoadedChunkSection(int x, int y, int z) {
+		int ypos = y >> 4;
+		return sections[ypos];
+	}
+
+	public ChunkSection getChunkSection(int x, int y, int z) {
+		int ypos = y >> 4;
+		ChunkSection section = sections[ypos];
+		if (section == null) section = new ChunkSection((byte) ypos, this.x, this.z);
+		return section;
 	}
 
 	public NbtCompound toNbt() {
@@ -101,7 +117,7 @@ public class Chunk implements Iterable<ChunkSection> {
 		}
 
 		private void getNext() {
-			for (;cursor<sections.length;cursor++) {
+			for (; cursor < sections.length; cursor++) {
 				next = sections[cursor];
 				cursor++;
 				if (next != null) return;

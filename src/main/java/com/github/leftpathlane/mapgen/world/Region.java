@@ -41,7 +41,7 @@ public class Region implements Iterable<Chunk> {
 				data.write(buf, 0, read);
 			}
 			for (int i = 0; i < 1024; i++) {
-				data.skipTo(i*4);
+				data.skipTo(i * 4);
 				byte[] chunkBlockLocation = new byte[4];
 				data.read(chunkBlockLocation);
 				int chunkOffset = ((chunkBlockLocation[0] & 0xFF << 16)
@@ -52,7 +52,7 @@ public class Region implements Iterable<Chunk> {
 				data.skipToBlock(chunkOffset);
 				byte[] chunkData = new byte[5];
 				data.read(chunkData);
-				int dataLength = (((chunkData[0] & 0xFF) << 24) + ((chunkData[1] & 0xFF) << 16) + ((chunkData[2] & 0xFF) << 8) + (chunkData[3] & 0xFF))-1;
+				int dataLength = (((chunkData[0] & 0xFF) << 24) + ((chunkData[1] & 0xFF) << 16) + ((chunkData[2] & 0xFF) << 8) + (chunkData[3] & 0xFF)) - 1;
 				byte compressionType = chunkData[4];
 				byte[] compressedData = new byte[dataLength];
 				data.read(compressedData);
@@ -67,8 +67,8 @@ public class Region implements Iterable<Chunk> {
 					NbtCompound compound = reader.readAll();
 					addChunk(compound);
 				} catch (EOFException e) {
-					int x = i&31;
-					int z = i/31;
+					int x = i & 31;
+					int z = i / 31;
 					try (InflaterInputStream inflaterInput = new InflaterInputStream(new ByteArrayInputStream(compressedData))) {
 						ByteArrayOutputStream bo = new ByteArrayOutputStream();
 						int r;
@@ -76,7 +76,7 @@ public class Region implements Iterable<Chunk> {
 						while ((r = inflaterInput.read(b)) > 0) {
 							bo.write(b, 0, r);
 						}
-						File out = new File(x+""+z);
+						File out = new File(x + "" + z);
 						FileOutputStream outputStream = new FileOutputStream(out);
 						outputStream.write(bo.toByteArray());
 					}
@@ -92,8 +92,32 @@ public class Region implements Iterable<Chunk> {
 	}
 
 	public void addBlock(Block block) {
-		int chunkX = block.getX() >> 4;
-		int chunkZ = block.getZ() >> 4;
+		Chunk chunk = getChunk(block.getX(), block.getY(), block.getZ());
+		chunk.addBlock(block);
+
+	}
+
+	public void addBlock(byte material, byte data, int x, int y, int z) {
+		Chunk chunk = getChunk(x, y, z);
+		chunk.addBlock(material, data, x, y, z);
+	}
+
+	public Block getBlock(int x, int y, int z) {
+		Chunk chunk = getLoadedChunk(x, y, z);
+		if (chunk == null) return null;
+		return chunk.getBlock(x, y, z);
+	}
+
+	public Chunk getLoadedChunk(int x, int y, int z) {
+		int chunkX = x >> 4;
+		int chunkZ = z >> 4;
+		Position pos = new Position(chunkX, chunkZ);
+		return chunks.get(pos);
+	}
+
+	public Chunk getChunk(int x, int y, int z) {
+		int chunkX = x >> 4;
+		int chunkZ = z >> 4;
 
 		Position pos = new Position(chunkX, chunkZ);
 		Chunk chunk = chunks.get(pos);
@@ -101,17 +125,19 @@ public class Region implements Iterable<Chunk> {
 			chunk = new Chunk(chunkX, chunkZ);
 			chunks.put(pos, chunk);
 		}
-		chunk.addBlock(block);
-
+		return chunk;
 	}
 
-	public Block getBlock(int x, int y, int z) {
-		int chunkX = x >> 4;
-		int chunkZ = z >> 4;
-		Position pos = new Position(chunkX, chunkZ);
-		Chunk chunk = chunks.get(pos);
+	public ChunkSection getLoadedChunkSection(int x, int y, int z) {
+		Chunk chunk = getLoadedChunk(x, y, z);
 		if (chunk == null) return null;
-		return chunk.getBlock(x, y, z);
+		return chunk.getLoadedChunkSection(x, y, z);
+	}
+
+	public ChunkSection getChunkSection(int x, int y, int z) {
+		Chunk chunk = getChunk(x, y, z);
+		if (chunk == null) return null;
+		return chunk.getChunkSection(x, y, z);
 	}
 
 	public int getRegionX() {
