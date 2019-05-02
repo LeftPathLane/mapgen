@@ -2,8 +2,6 @@ package com.github.leftpathlane.mapgen;
 
 import com.github.leftpathlane.jnbt.types.*;
 
-import java.util.HashMap;
-
 public class LevelData {
 	public byte allowCommands = 1;
 	public double borderCenterX;
@@ -61,65 +59,65 @@ public class LevelData {
 	public LevelData(NbtCompound nbt) {
 		NbtCompound data = nbt.getValue().get("Data").asCompound();
 
-		allowCommands = data.getValue().get("allowCommands").asByte().getValue();
-		borderCenterX = data.getValue().get("BorderCenterX").asDouble().getValue();
-		borderCenterZ = data.getValue().get("BorderCenterZ").asDouble().getValue();
-		borderDamagePerBlock = data.getValue().get("BorderDamagePerBlock").asDouble().getValue();
-		borderSafeZone = data.getValue().get("BorderSafeZone").asDouble().getValue();
-		borderSize = data.getValue().get("BorderSize").asDouble().getValue();
-		borderSizeLerpTarget = data.getValue().get("BorderSizeLerpTarget").asDouble().getValue();
-		borderSizeLerpTime = data.getValue().get("BorderSizeLerpTime").asLong().getValue();
-		borderWarningBlocks = data.getValue().get("BorderWarningBlocks").asDouble().getValue();
-		borderWarningTime = data.getValue().get("BorderWarningTime").asDouble().getValue();
-		clearWeatherTime = data.getValue().get("clearWeatherTime").asInt().getValue();
-		dayTime = data.getValue().get("DayTime").asLong().getValue();
-		difficulty = data.getValue().get("Difficulty").asByte().getValue();
-		difficultyLocked = data.getValue().get("DifficultyLocked").asByte().getValue();
-		gameType = data.getValue().get("GameType").asInt().getValue();
-		generatorName = data.getValue().get("generatorName").asString().getValue();
-		generatorOptions = data.getValue().get("generatorOptions").asString().getValue();
-		generatorVersion = data.getValue().get("generatorVersion").asInt().getValue();
-		hardcore = data.getValue().get("hardcore").asByte().getValue();
-		initialized = data.getValue().get("initialized").asByte().getValue();
-		lastPlayed = data.getValue().get("LastPlayed").asLong().getValue();
-		levelName = data.getValue().get("LevelName").asString().getValue();
-		mapFeatures = data.getValue().get("MapFeatures").asByte().getValue();
-		raining = data.getValue().get("raining").asByte().getValue();
-		rainTime = data.getValue().get("rainTime").asInt().getValue();
-		randomSeed = data.getValue().get("RandomSeed").asLong().getValue();
-		sizeOnDisk = data.getValue().get("SizeOnDisk").asLong().getValue();
-		spawnX = data.getValue().get("SpawnX").asInt().getValue();
-		spawnY = data.getValue().get("SpawnY").asInt().getValue();
-		spawnZ = data.getValue().get("SpawnZ").asInt().getValue();
-		thundering = data.getValue().get("thundering").asByte().getValue();
-		thunderTime = data.getValue().get("thunderTime").asInt().getValue();
-		time = data.getValue().get("Time").asLong().getValue();
-		version = data.getValue().get("version").asInt().getValue();
+		allowCommands = data.getNbt("allowCommands").asByte().getValue();
+		borderCenterX = data.getNbt("BorderCenterX").asDouble().getValue();
+		borderCenterZ = data.getNbt("BorderCenterZ").asDouble().getValue();
+		borderDamagePerBlock = data.getNbt("BorderDamagePerBlock").asDouble().getValue();
+		borderSafeZone = data.getNbt("BorderSafeZone").asDouble().getValue();
+		borderSize = data.getNbt("BorderSize").asDouble().getValue();
+		borderSizeLerpTarget = data.getNbt("BorderSizeLerpTarget").asDouble().getValue();
+		borderSizeLerpTime = data.getNbt("BorderSizeLerpTime").asLong().getValue();
+		borderWarningBlocks = data.getNbt("BorderWarningBlocks").asDouble().getValue();
+		borderWarningTime = data.getNbt("BorderWarningTime").asDouble().getValue();
+		clearWeatherTime = data.getNbt("clearWeatherTime").asInt().getValue();
+		dayTime = data.getNbt("DayTime").asLong().getValue();
+		difficulty = data.getNbt("Difficulty").asByte().getValue();
+		difficultyLocked = data.getNbt("DifficultyLocked").asByte().getValue();
+		gameType = data.getNbt("GameType").asInt().getValue();
+		generatorName = data.getNbt("generatorName").asString().getValue();
+		generatorOptions = data.getNbt("generatorOptions").asString().getValue();
+		generatorVersion = data.getNbt("generatorVersion").asInt().getValue();
+		hardcore = data.getNbt("hardcore").asByte().getValue();
+		initialized = data.getNbt("initialized").asByte().getValue();
+		lastPlayed = data.getNbt("LastPlayed").asLong().getValue();
+		levelName = data.getNbt("LevelName").asString().getValue();
+		mapFeatures = data.getNbt("MapFeatures").asByte().getValue();
+		raining = data.getNbt("raining").asByte().getValue();
+		rainTime = data.getNbt("rainTime").asInt().getValue();
+		randomSeed = data.getNbt("RandomSeed").asLong().getValue();
+		sizeOnDisk = data.getNbt("SizeOnDisk").asLong().getValue();
+		spawnX = data.getNbt("SpawnX").asInt().getValue();
+		spawnY = data.getNbt("SpawnY").asInt().getValue();
+		spawnZ = data.getNbt("SpawnZ").asInt().getValue();
+		thundering = data.getNbt("thundering").asByte().getValue();
+		thunderTime = data.getNbt("thunderTime").asInt().getValue();
+		time = data.getNbt("Time").asLong().getValue();
+		version = data.getNbt("version").asInt().getValue();
 
-		NbtCompound gameRules = data.getValue().get("GameRules").asCompound();
+		NbtCompound gameRules = data.getNbt("GameRules").asCompound();
 
-		commandBlockOutput = gameRules.getValue().get("commandBlockOutput").asString().getValue();
-		doDaylightCycle = gameRules.getValue().get("doDaylightCycle").asString().getValue();
-		doEntityDrops = gameRules.getValue().get("doEntityDrops").asString().getValue();
-		doFireTick = gameRules.getValue().get("doFireTick").asString().getValue();
-		doMobLoot = gameRules.getValue().get("doMobLoot").asString().getValue();
-		doMobSpawning = gameRules.getValue().get("doMobSpawning").asString().getValue();
-		dotileDrop = gameRules.getValue().get("doTileDrops").asString().getValue();
-		keepInventory = gameRules.getValue().get("keepInventory").asString().getValue();
-		logAdminCommands = gameRules.getValue().get("logAdminCommands").asString().getValue();
-		mobGriefing = gameRules.getValue().get("mobGriefing").asString().getValue();
-		naturalRegenration = gameRules.getValue().get("naturalRegeneration").asString().getValue();
-		randomtickSpeed = gameRules.getValue().get("randomTickSpeed").asString().getValue();
-		reducedDebugInfo = gameRules.getValue().get("reducedDebugInfo").asString().getValue();
-		sendCommandFeedback = gameRules.getValue().get("sendCommandFeedback").asString().getValue();
-		showDeathMessages = gameRules.getValue().get("showDeathMessages").asString().getValue();
+		commandBlockOutput = gameRules.getNbt("commandBlockOutput").asString().getValue();
+		doDaylightCycle = gameRules.getNbt("doDaylightCycle").asString().getValue();
+		doEntityDrops = gameRules.getNbt("doEntityDrops").asString().getValue();
+		doFireTick = gameRules.getNbt("doFireTick").asString().getValue();
+		doMobLoot = gameRules.getNbt("doMobLoot").asString().getValue();
+		doMobSpawning = gameRules.getNbt("doMobSpawning").asString().getValue();
+		dotileDrop = gameRules.getNbt("doTileDrops").asString().getValue();
+		keepInventory = gameRules.getNbt("keepInventory").asString().getValue();
+		logAdminCommands = gameRules.getNbt("logAdminCommands").asString().getValue();
+		mobGriefing = gameRules.getNbt("mobGriefing").asString().getValue();
+		naturalRegenration = gameRules.getNbt("naturalRegeneration").asString().getValue();
+		randomtickSpeed = gameRules.getNbt("randomTickSpeed").asString().getValue();
+		reducedDebugInfo = gameRules.getNbt("reducedDebugInfo").asString().getValue();
+		sendCommandFeedback = gameRules.getNbt("sendCommandFeedback").asString().getValue();
+		showDeathMessages = gameRules.getNbt("showDeathMessages").asString().getValue();
 	}
 
 	public NbtCompound toNbt() {
-		NbtCompound root = new NbtCompound("", new HashMap<String, NbtType>());
-		NbtCompound nbt = new NbtCompound("Data", new HashMap<String, NbtType>());
+		NbtCompound root = new NbtCompound("");
+		NbtCompound nbt = new NbtCompound("Data");
 		root.addNbt(nbt);
-		NbtCompound gameRules = new NbtCompound("GameRules", new HashMap<String, NbtType>());
+		NbtCompound gameRules = new NbtCompound("GameRules");
 		nbt.addNbt(gameRules);
 		gameRules.addNbt("commandBlockOutput", commandBlockOutput);
 		gameRules.addNbt("doDaylightCycle", doDaylightCycle);

@@ -154,9 +154,11 @@ public class Region implements Iterable<Chunk> {
 		for (Chunk chunk : chunks.values()) {
 			try {
 				NbtCompound nbt = chunk.toNbt();
-				byte[] chunkData = new NbtWriter().write(nbt);
+				ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+				new NbtWriter(nbt, byteOut);
+				byte[] chunkData = byteOut.toByteArray();
 
-				Deflater deflater = new Deflater();
+						Deflater deflater = new Deflater();
 				deflater.setInput(chunkData);
 				deflater.finish();
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -198,9 +200,9 @@ public class Region implements Iterable<Chunk> {
 	}
 
 	private void addChunk(NbtCompound chunk) {
-		NbtCompound level = chunk.getValue().get("Level").asCompound();
-		int xPos = level.getValue().get("xPos").asInt().getValue();
-		int zPos = level.getValue().get("zPos").asInt().getValue();
+		NbtCompound level = chunk.getNbt("Level").asCompound();
+		int xPos = level.getNbt("xPos").asInt().getValue();
+		int zPos = level.getNbt("zPos").asInt().getValue();
 		Position position = new Position(xPos, zPos);
 		chunks.put(position, new Chunk(chunk));
 	}

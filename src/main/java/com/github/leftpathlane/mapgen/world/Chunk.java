@@ -23,18 +23,18 @@ public class Chunk implements Iterable<ChunkSection> {
 	}
 
 	public Chunk(NbtCompound chunk) {
-		NbtCompound level = chunk.getValue().get("Level").asCompound();
-		this.x = level.getValue().get("xPos").asInt().getValue();
-		this.z = level.getValue().get("zPos").asInt().getValue();
-		this.heightMap = level.getValue().get("HeightMap").asIntArray().getValue();
-		this.inhabitedTime = level.getValue().get("InhabitedTime").asLong().getValue();
-		this.lastUpdate = level.getValue().get("LastUpdate").asLong().getValue();
-		this.lightPopulated = level.getValue().get("LightPopulated").asByte().asBoolean();
-		this.terrainPopulated = level.getValue().get("TerrainPopulated").asByte().asBoolean();
-		NbtList sectionList = level.getValue().get("Sections").asList();
+		NbtCompound level = chunk.getNbt("Level").asCompound();
+		this.x = level.getNbt("xPos").asInt().getValue();
+		this.z = level.getNbt("zPos").asInt().getValue();
+		this.heightMap = level.getNbt("HeightMap").asIntArray().getValue();
+		this.inhabitedTime = level.getNbt("InhabitedTime").asLong().getValue();
+		this.lastUpdate = level.getNbt("LastUpdate").asLong().getValue();
+		this.lightPopulated = level.getNbt("LightPopulated").asByte().asBoolean();
+		this.terrainPopulated = level.getNbt("TerrainPopulated").asByte().asBoolean();
+		NbtList sectionList = level.getNbt("Sections").asList();
 		for (NbtType t : sectionList.getValue()) {
 			NbtCompound section = t.asCompound();
-			byte y = section.getValue().get("Y").asByte().getValue();
+			byte y = section.getNbt("Y").asByte().getValue();
 			sections[y] = new ChunkSection(section, x, z);
 		}
 	}
@@ -83,9 +83,9 @@ public class Chunk implements Iterable<ChunkSection> {
 	}
 
 	public NbtCompound toNbt() {
-		NbtCompound nbt = new NbtCompound("Chunk [" + (x & 31) + ", " + (z & 31) + "]", new HashMap<String, NbtType>());
-		NbtCompound level = new NbtCompound("Level", new HashMap<String, NbtType>());
-		NbtList list = new NbtList("Sections", NbtType.NBT_TAG_COMPOUND, new ArrayList<NbtType>());
+		NbtCompound nbt = new NbtCompound("Chunk [" + (x & 31) + ", " + (z & 31) + "]");
+		NbtCompound level = new NbtCompound("Level");
+		NbtList list = new NbtList("Sections", NbtType.NBT_TAG_COMPOUND);
 		for (ChunkSection section : sections) {
 			if (section != null) list.addNbt(section.toNbt());
 		}
@@ -97,8 +97,8 @@ public class Chunk implements Iterable<ChunkSection> {
 		level.addNbt("LightPopulated", lightPopulated ? (byte) 1 : (byte) 0);
 		level.addNbt("TerrainPopulated", terrainPopulated ? (byte) 1 : (byte) 0);
 		level.addNbt("HeightMap", heightMap);
-		level.addNbt("Entities", NbtType.NBT_TAG_COMPOUND, new ArrayList<NbtType>());
-		level.addNbt("TileEntities", NbtType.NBT_TAG_COMPOUND, new ArrayList<NbtType>());
+		level.addNbt(new NbtList("Entities", NbtType.NBT_TAG_COMPOUND));
+		level.addNbt(new NbtList("TileEntities", NbtType.NBT_TAG_COMPOUND));
 		nbt.addNbt(level);
 		return nbt;
 	}

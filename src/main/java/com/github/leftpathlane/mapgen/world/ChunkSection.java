@@ -1,10 +1,8 @@
 package com.github.leftpathlane.mapgen.world;
 
 import com.github.leftpathlane.jnbt.types.NbtCompound;
-import com.github.leftpathlane.jnbt.types.NbtType;
 import com.github.leftpathlane.mapgen.Block;
 
-import java.util.HashMap;
 import java.util.Iterator;
 
 public class ChunkSection implements Iterable<Block> {
@@ -27,11 +25,11 @@ public class ChunkSection implements Iterable<Block> {
 	}
 
 	public ChunkSection(NbtCompound section, int chunkX, int chunkZ) {
-		this.y = section.getValue().get("Y").asByte().getValue();
-		this.blockLight = section.getValue().get("BlockLight").asByteArray().getValue();
-		this.blocks = section.getValue().get("Blocks").asByteArray().getValue();
-		this.data = section.getValue().get("Data").asByteArray().getValue();
-		this.skylight = section.getValue().get("SkyLight").asByteArray().getValue();
+		this.y = section.getNbt("Y").asByte().getValue();
+		this.blockLight = section.getNbt("BlockLight").asByteArray().getValue();
+		this.blocks = section.getNbt("Blocks").asByteArray().getValue();
+		this.data = section.getNbt("Data").asByteArray().getValue();
+		this.skylight = section.getNbt("SkyLight").asByteArray().getValue();
 		this.chunkXmod = chunkX << 4;
 		this.chunkYmod = y << 4;
 		this.chunkZmod = chunkZ << 4;
@@ -83,7 +81,7 @@ public class ChunkSection implements Iterable<Block> {
 	}
 
 	public NbtCompound toNbt() {
-		NbtCompound nbt = new NbtCompound("", new HashMap<String, NbtType>());
+		NbtCompound nbt = new NbtCompound();
 		nbt.addNbt("Y", y);
 		nbt.addNbt("BlockLight", blockLight);
 		nbt.addNbt("Blocks", blocks);

@@ -110,7 +110,7 @@ public class World implements Iterable<Region> {
 			if (!levelData.exists()) levelData.createNewFile();
 			try (FileOutputStream outputStream = new FileOutputStream(levelData);
 				 GZIPOutputStream gzipout = new GZIPOutputStream(outputStream)) {
-				gzipout.write(new NbtWriter().write(this.levelData.toNbt()));
+				new NbtWriter(this.levelData.toNbt(), gzipout);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
