@@ -48,7 +48,7 @@ public class Chunk implements Iterable<ChunkSection> {
 	}
 
 	public void addBlock(Block block) {
-		ChunkSection section = getChunkSection(block.getX(), block.getZ(), block.getZ());
+		ChunkSection section = getChunkSection(block.getX(), block.getY(), block.getZ());
 		section.addBlock(block);
 		addToHeightMap(block.getX(), block.getY(), block.getZ());
 	}
@@ -78,7 +78,10 @@ public class Chunk implements Iterable<ChunkSection> {
 	public ChunkSection getChunkSection(int x, int y, int z) {
 		int ypos = y >> 4;
 		ChunkSection section = sections[ypos];
-		if (section == null) section = new ChunkSection((byte) ypos, this.x, this.z);
+		if (section == null) {
+			section = new ChunkSection((byte) ypos, this.x, this.z);
+			sections[ypos] = section;
+		}
 		return section;
 	}
 
