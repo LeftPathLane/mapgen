@@ -26,7 +26,7 @@ public class World implements Iterable<Region> {
 		this.levelData = new LevelData();
 	}
 
-	public World(File root) throws IOException {
+	public World(File root) throws IOException, NbtReader.NbtTagException {
 		if (!root.exists()) throw new IllegalArgumentException();
 		File levelDataFile = new File(root, "level.dat");
 		if (!levelDataFile.exists()) throw new IllegalArgumentException();

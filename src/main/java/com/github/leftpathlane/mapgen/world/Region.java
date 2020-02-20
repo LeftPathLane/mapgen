@@ -84,6 +84,8 @@ public class Region implements Iterable<Chunk> {
 
 					System.out.println(file.getName() + " " + x + " " + z);
 					e.printStackTrace();
+				} catch (NbtReader.NbtTagException e) {
+					e.printStackTrace();
 				}
 			}
 		} catch (IOException e) {
