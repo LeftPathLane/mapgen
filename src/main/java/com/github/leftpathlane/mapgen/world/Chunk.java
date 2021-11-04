@@ -60,7 +60,7 @@ public class Chunk implements Iterable<ChunkSection> {
 	}
 
 	private void addToHeightMap(int x, int y, int z) {
-		int heightMapIndex = (x >> 4) + (z >> 4) * 16;
+		int heightMapIndex = ((x >> 4) & 0xF) + ((z >> 4) & 0xF) * 16;
 		if (y > heightMap[heightMapIndex]) heightMap[heightMapIndex] = y;
 	}
 
