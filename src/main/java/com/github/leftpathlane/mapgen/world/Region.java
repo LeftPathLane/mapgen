@@ -173,7 +173,7 @@ public class Region implements Iterable<Chunk> {
 
 				int sectorCount = 1;
 				if (compressedData.length + 5 > CHUNK_SIZE) {
-					sectorCount = (compressedData.length + 5) / CHUNK_SIZE;
+					sectorCount = (int) Math.ceil((compressedData.length + 5.0) / CHUNK_SIZE);
 				}
 
 				int locationData = 4 * ((chunk.getX() & 31) + (chunk.getZ() & 31) * 32);
