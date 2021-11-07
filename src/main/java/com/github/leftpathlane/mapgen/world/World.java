@@ -103,6 +103,12 @@ public class World implements Iterable<Region> {
 		return chunk.getChunkSection(x, y, z);
 	}
 
+	public void addTileEntity(int x, int y, int z, NbtCompound tileEntity) {
+		Chunk chunk = getChunk(x, y, z);
+		if (chunk == null) return;
+		chunk.addTileEntity(tileEntity);
+	}
+
 	public void saveWorld(File file) {
 		if (!file.exists()) file.mkdir();
 		File levelData = new File(file, "level.dat");

@@ -8,6 +8,7 @@ import com.github.leftpathlane.mapgen.Block;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 public class Chunk implements Iterable<ChunkSection> {
 	private final int x, z;
@@ -15,11 +16,14 @@ public class Chunk implements Iterable<ChunkSection> {
 	public ChunkSection[] sections = new ChunkSection[16];
 	private long inhabitedTime, lastUpdate;
 	private boolean lightPopulated, terrainPopulated;
+	private List<NbtType> entities, tileEntities;
 
 	public Chunk(int x, int z) {
 		this.x = x;
 		this.z = z;
 		this.heightMap = new int[256];
+		this.entities = new ArrayList<>();
+		this.tileEntities = new ArrayList<>();
 	}
 
 	public Chunk(NbtCompound chunk) {
@@ -31,6 +35,8 @@ public class Chunk implements Iterable<ChunkSection> {
 		this.lastUpdate = level.getNbt("LastUpdate").asLong().getValue();
 		this.lightPopulated = level.getNbt("LightPopulated").asByte().asBoolean();
 		this.terrainPopulated = level.getNbt("TerrainPopulated").asByte().asBoolean();
+		this.entities = level.getNbt("Entities").asList().getValue();
+		this.tileEntities = level.getNbt("TileEntities").asList().getValue();
 		NbtList sectionList = level.getNbt("Sections").asList();
 		for (NbtType t : sectionList.getValue()) {
 			NbtCompound section = t.asCompound();
@@ -64,6 +70,10 @@ public class Chunk implements Iterable<ChunkSection> {
 		if (y > heightMap[heightMapIndex]) heightMap[heightMapIndex] = y;
 	}
 
+	public void addTileEntity(NbtCompound entity) {
+		this.tileEntities.add(entity);
+	}
+
 	public Block getBlock(int x, int y, int z) {
 		ChunkSection section = getLoadedChunkSection(x, y, z);
 		if (section == null) return null;
@@ -85,6 +95,14 @@ public class Chunk implements Iterable<ChunkSection> {
 		return section;
 	}
 
+	public List<NbtType> getEntities() {
+		return this.entities;
+	}
+
+	public List<NbtType> getTileEntities() {
+		return this.tileEntities;
+	}
+
 	public NbtCompound toNbt() {
 		NbtCompound nbt = new NbtCompound("Chunk [" + (x & 31) + ", " + (z & 31) + "]");
 		NbtCompound level = new NbtCompound("Level");
@@ -102,6 +120,8 @@ public class Chunk implements Iterable<ChunkSection> {
 		level.addNbt("HeightMap", heightMap);
 		level.addNbt(new NbtList("Entities", NbtType.NBT_TAG_COMPOUND));
 		level.addNbt(new NbtList("TileEntities", NbtType.NBT_TAG_COMPOUND));
+		level.addNbt(new NbtList("Entities", NbtType.NBT_TAG_COMPOUND, entities));
+		level.addNbt(new NbtList("TileEntities", NbtType.NBT_TAG_COMPOUND, tileEntities));
 		nbt.addNbt(level);
 		return nbt;
 	}
