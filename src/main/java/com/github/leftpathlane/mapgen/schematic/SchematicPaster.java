@@ -18,15 +18,16 @@ public class SchematicPaster {
 			if (block == null) continue;
 			addBlock(block.move(x, y, z));
 		}
-		for (NbtCompound nbt : schematic.tileEntities) {
-			int ex = nbt.getNbt("x").asInt().getValue();
-			int ey = nbt.getNbt("y").asInt().getValue();
-			int ez = nbt.getNbt("z").asInt().getValue();
-			nbt.addNbt("x", ex + x);
-			nbt.addNbt("y", ey + y );
-			nbt.addNbt("z", ez + z);
-			world.addTileEntity(ex + x, ey + y, ez + z, nbt);
-		}
+		if (schematic.tileEntities != null) 
+			for (NbtCompound nbt : schematic.tileEntities) {
+				int ex = nbt.getNbt("x").asInt().getValue();
+				int ey = nbt.getNbt("y").asInt().getValue();
+				int ez = nbt.getNbt("z").asInt().getValue();
+				nbt.addNbt("x", ex + x);
+				nbt.addNbt("y", ey + y );
+				nbt.addNbt("z", ez + z);
+				world.addTileEntity(ex + x, ey + y, ez + z, nbt);
+			}
 	}
 
 	public void addBlock(Block block) {

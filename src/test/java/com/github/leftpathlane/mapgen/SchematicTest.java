@@ -1,6 +1,7 @@
 package com.github.leftpathlane.mapgen;
 
 import com.github.leftpathlane.jnbt.NbtReader;
+import com.github.leftpathlane.jnbt.NbtReader.NbtTagException;
 import com.github.leftpathlane.jnbt.types.NbtCompound;
 import com.github.leftpathlane.mapgen.schematic.Schematic;
 import com.github.leftpathlane.mapgen.schematic.SchematicPaster;
@@ -14,7 +15,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class SchematicTest {
 	@Test
-	public void SchematicTest() throws IOException {
+	public void SchematicTest() throws IOException, NbtTagException {
 		File file = new File(this.getClass().getClassLoader().getResource("test.schematic").getFile());
 		NbtReader reader = new NbtReader(file);
 		NbtCompound nbt = reader.readAll();
