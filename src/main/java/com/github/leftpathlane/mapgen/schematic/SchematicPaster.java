@@ -14,12 +14,12 @@ public class SchematicPaster {
 	}
 
 	public void pasteSchematic(Schematic schematic, int x, int y, int z) {
-		for (Block block : schematic.blocks) {
+		for (Block block : schematic.getBlocks()) {
 			if (block == null) continue;
 			addBlock(block.move(x, y, z));
 		}
-		if (schematic.tileEntities != null) 
-			for (NbtCompound nbt : schematic.tileEntities) {
+		if (schematic.getTileEntities() != null) 
+			for (NbtCompound nbt : schematic.getTileEntities()) {
 				int ex = nbt.getNbt("x").asInt().getValue();
 				int ey = nbt.getNbt("y").asInt().getValue();
 				int ez = nbt.getNbt("z").asInt().getValue();

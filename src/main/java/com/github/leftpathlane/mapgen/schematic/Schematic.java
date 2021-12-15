@@ -4,12 +4,15 @@ import com.github.leftpathlane.jnbt.types.NbtCompound;
 import com.github.leftpathlane.jnbt.types.NbtList;
 import com.github.leftpathlane.mapgen.Block;
 
+import lombok.Getter;
+
 import java.util.List;
 
+@Getter
 public class Schematic {
-	public Block[] blocks;
-	public short width, length, height;
-	public List<NbtCompound> entities, tileEntities;
+	private Block[] blocks;
+	private short width, length, height;
+	private List<NbtCompound> entities, tileEntities;
 
 	public Schematic(NbtCompound nbt) {
 		this(nbt, false);

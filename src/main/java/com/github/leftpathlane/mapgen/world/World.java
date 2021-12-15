@@ -15,8 +15,8 @@ import java.util.Iterator;
 import java.util.zip.GZIPOutputStream;
 
 public class World implements Iterable<Region> {
-	public final LevelData levelData;
-	public HashMap<Position, Region> regions = new HashMap<>();
+	private final LevelData levelData;
+	private HashMap<Position, Region> regions = new HashMap<>();
 
 	public World(LevelData levelData) {
 		this.levelData = levelData;
@@ -39,7 +39,6 @@ public class World implements Iterable<Region> {
 		if (!regionFolder.exists() || regionFolder.listFiles() == null) return;
 		for (File regionFile : regionFolder.listFiles()) {
 			Region region = new Region(regionFile);
-			if (region == null) continue;
 			regions.put(new Position(region.getRegionX(), region.getRegionZ()), region);
 		}
 
@@ -71,13 +70,10 @@ public class World implements Iterable<Region> {
 	public Region getRegion(int x, int y, int z) {
 		int regionX = x >> 9;
 		int regionZ = z >> 9;
-		Position pos = new Position(regionX, regionZ);
-		Region region = regions.get(pos);
-		if (region == null) {
-			region = new Region(regionX, regionZ);
-			regions.put(pos, region);
-		}
-		return region;
+		return regions.computeIfAbsent(
+			new Position(regionX, regionZ),
+			pp -> new Region(regionX, regionZ)
+		);
 	}
 
 	public Chunk getLoadedChunk(int x, int y, int z) {

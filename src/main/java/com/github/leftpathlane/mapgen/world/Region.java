@@ -121,13 +121,10 @@ public class Region implements Iterable<Chunk> {
 		int chunkX = x >> 4;
 		int chunkZ = z >> 4;
 
-		Position pos = new Position(chunkX, chunkZ);
-		Chunk chunk = chunks.get(pos);
-		if (chunk == null) {
-			chunk = new Chunk(chunkX, chunkZ);
-			chunks.put(pos, chunk);
-		}
-		return chunk;
+		return chunks.computeIfAbsent(
+			new Position(chunkX, chunkZ), 
+			pp -> new Chunk(chunkX, chunkZ)
+		);
 	}
 
 	public ChunkSection getLoadedChunkSection(int x, int y, int z) {

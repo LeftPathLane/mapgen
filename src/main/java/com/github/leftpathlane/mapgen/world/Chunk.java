@@ -12,7 +12,7 @@ import java.util.List;
 public class Chunk implements Iterable<ChunkSection> {
 	private final int x, z;
 	private final int[] heightMap;
-	public ChunkSection[] sections = new ChunkSection[16];
+	private ChunkSection[] sections = new ChunkSection[16];
 	private long inhabitedTime, lastUpdate;
 	private boolean lightPopulated, terrainPopulated;
 	private List<NbtCompound> entities, tileEntities;
